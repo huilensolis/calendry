@@ -2,7 +2,6 @@ import Link from "next/link";
 import { headers } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
-import { SubmitButton } from "./components/submit-button";
 import { GithubAuthBtn } from "./components/github-auth-btn";
 
 export default function Login({
@@ -53,7 +52,7 @@ export default function Login({
   };
 
   return (
-    <div className="flex-1 flex flex-col w-full px-8 sm:max-w-md justify-center gap-2">
+    <div className="flex-1 flex flex-col w-full px-8 sm:max-w-md justify-center items-center min-h-screen gap-2">
       <Link
         href="/"
         className="absolute left-8 top-8 py-2 px-4 rounded-md no-underline text-foreground bg-btn-background hover:bg-btn-background-hover flex items-center group text-sm"
@@ -95,20 +94,20 @@ export default function Login({
           placeholder="••••••••"
           required
         />
-        <SubmitButton
+        <button
           formAction={signIn}
           className="bg-green-700 rounded-md px-4 py-2 text-foreground mb-2"
           pendingText="Signing In..."
         >
           Sign In
-        </SubmitButton>
-        <SubmitButton
+        </button>
+        <button
           formAction={signUp}
           className="border border-foreground/20 rounded-md px-4 py-2 text-foreground mb-2"
           pendingText="Signing Up..."
         >
           Sign Up
-        </SubmitButton>
+        </button>
         {searchParams?.message && (
           <p className="mt-4 p-4 bg-foreground/10 text-foreground text-center">
             {searchParams.message}

@@ -18,13 +18,21 @@ export default async function AuthButton() {
   };
 
   return user ? (
-    <div className="flex items-center gap-4">
-      Hey, {user.email}!
-      <form action={signOut}>
-        <button className="py-2 px-4 rounded-md no-underline bg-btn-background hover:bg-btn-background-hover">
-          Logout
-        </button>
-      </form>
+    <div className="flex items-center justify-center gap-2">
+      <div className="flex items-center gap-4">
+        {user.email}!
+        <form action={signOut}>
+          <button className="py-2 px-4 rounded-md no-underline bg-btn-background hover:bg-btn-background-hover">
+            Logout
+          </button>
+        </form>
+      </div>
+      <Link
+        href="/protected"
+        className="py-2 px-3 flex rounded-md no-underline bg-btn-background hover:bg-btn-background-hover"
+      >
+        Launch app
+      </Link>
     </div>
   ) : (
     <Link
