@@ -2,7 +2,8 @@ import Link from "next/link";
 import { headers } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
-import { SubmitButton } from "./submit-button";
+import { SubmitButton } from "./components/submit-button";
+import { GithubAuthBtn } from "./components/github-auth-btn";
 
 export default function Login({
   searchParams,
@@ -113,6 +114,8 @@ export default function Login({
             {searchParams.message}
           </p>
         )}
+        <span className="text-center">Or</span>
+        <GithubAuthBtn />
       </form>
     </div>
   );
