@@ -1,14 +1,16 @@
 import Link from "next/link";
 import { GithubAuthBtn } from "./components/github-auth-btn";
-import { Button } from "@/components/ui/button";
 import { SignUpBtn } from "./components/sign-up-btn/sign-up-btn.component";
 import { SignInBtn } from "./components/sign-in-btn/sign-in-btn.component";
+import { protectPageFromAunthenticated } from "@/lib/guards/server/unauthenticated";
 
-export default function Login({
+export default async function Login({
   searchParams,
 }: {
   searchParams: { message: string };
 }) {
+  await protectPageFromAunthenticated();
+
   return (
     <div className="flex-1 flex flex-col w-full px-8 sm:max-w-md justify-center items-center min-h-screen gap-2">
       <Link

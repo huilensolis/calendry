@@ -1,6 +1,6 @@
 "use server";
 
-import { createClient } from "@/utils/supabase/server";
+import { createClient } from "@/lib/utils/supabase/server";
 import { redirect } from "next/navigation";
 
 export async function signIn(formData: FormData) {

@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { createClient } from "@/utils/supabase/server";
+import { createClient } from "@/lib/utils/supabase/server";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
@@ -28,7 +28,7 @@ export async function AuthButton() {
       </div>
       <Link
         href="/protected"
-        className="bg-primary text-primary-foreground shadow hover:bg-primary/90 py-2 px-4 nline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
+        className="underline hover:brightness-90 text-sm font-medium transition-colors text-neutral-950 py-2 px-4"
       >
         Launch app
       </Link>
@@ -36,7 +36,7 @@ export async function AuthButton() {
   ) : (
     <Link
       href="/login"
-      className="bg-primary text-primary-foreground shadow hover:bg-primary/90 py-2 px-4 nline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
+      className="underline hover:brightness-90 text-sm font-medium transition-colors text-neutral-950 py-2 px-4"
     >
       Login
     </Link>
