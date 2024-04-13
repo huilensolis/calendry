@@ -1,8 +1,8 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { ORIGIN } from "@/utils/consts";
-import { createClient } from "@/utils/supabase/client";
+import { ORIGIN } from "@/lib/consts";
+import { createClient } from "@/lib/utils/supabase/client";
 import { redirect } from "next/navigation";
 import { HTMLAttributes } from "react";
 
