@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { ORIGIN } from "@/utils/consts";
 import { createClient } from "@/utils/supabase/client";
 import { redirect } from "next/navigation";
@@ -24,29 +25,27 @@ export function GithubAuthBtn() {
 
   async function signIn() {
     try {
-      const { data, error } = await supabase.auth.signInWithOAuth({
+      const { error } = await supabase.auth.signInWithOAuth({
         provider: "github",
         options: {
           redirectTo: `${ORIGIN}/auth/callback`,
         },
       });
 
-      console.log({ error });
-      console.log("heree");
       if (error) throw new Error();
     } catch (error) {
-      console.log(error);
       return redirect("/login?message=Could not authenticate user");
     }
   }
 
   return (
-    <button
+    <Button
       type="button"
+      variant="outline"
       onClick={signIn}
-      className="flex items-center justify-center gap-2 bg-neutral-600 py-2 px-4"
+      className="flex gap-2"
     >
-      continue with <GithubIcon className="h-4 w-4 fill-neutral-50" />
-    </button>
+      Continue with <GithubIcon className="h-4 w-4 fill-neutral-950" />
+    </Button>
   );
 }
