@@ -1,9 +1,9 @@
-import AuthButton from "@/components/AuthButton";
+import { AuthButton } from "@/components/feature/auth-btn";
 
 export default async function IndexPage() {
   return (
     <article className="flex flex-col items-center h-screen max-w-7xl">
-      <header className="w-full flex justify-end items-center">
+      <header className="w-full flex justify-end items-center py-2 ">
         <AuthButton />
       </header>
       <main className="h-full flex flex-col items-center justify-center">
