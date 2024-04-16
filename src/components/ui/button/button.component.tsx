@@ -47,13 +47,17 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ) => {
     return (
       <button
-        className={cn(buttonVariants({ variant, size, className }))}
-        ref={ref}
+        className={cn(
+          buttonVariants({ variant, size, className }),
+          "flex gap-1",
+        )}
         disabled={disabled}
         {...(disabled && { "aria-disabled": true })}
         {...props}
+        ref={ref}
       >
-        {loading ? <Spinner /> : children}
+        {children}
+        {loading && <Spinner />}
       </button>
     );
   },

@@ -8,6 +8,7 @@ const fontSans = FontSans({
   subsets: ["latin"],
   variable: "--font-sans",
 });
+
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
   : "http://localhost:3000";
@@ -25,13 +26,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
-        <main
-          className={cn(
-            "min-h-screen bg-background font-sans antialiased flex justify-center",
-            fontSans.variable,
-          )}
-        >
+      <body className={`font-sans ${fontSans.variable}`}>
+        <main className="min-h-screen bg-background font-sans antialiased flex justify-center">
           {children}
         </main>
       </body>
