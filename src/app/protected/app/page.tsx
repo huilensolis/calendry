@@ -7,7 +7,7 @@ export default async function appPage() {
   await protectPageFromUnauthenticated();
   return (
     <div className="flex w-full min-h-screen">
-      <div className="w-full h-screen max-w-96 border-r border-neutral-300">
+      <div className="w-full h-screen max-w-72 border-r border-neutral-300">
         <CalendarAside />
       </div>
       <section className="h-full w-full">

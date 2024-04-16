@@ -3,6 +3,7 @@ import { GithubAuthBtn } from "./components/github-auth-btn";
 import { SignUpBtn } from "./components/sign-up-btn/sign-up-btn.component";
 import { SignInBtn } from "./components/sign-in-btn/sign-in-btn.component";
 import { protectPageFromAunthenticated } from "@/lib/guards/server/unauthenticated";
+import { Label } from "@/components/ui/label/label.component";
 
 export default async function Login({
   searchParams,
@@ -36,9 +37,7 @@ export default async function Login({
 
       <form className="animate-in flex-1 flex flex-col w-full justify-center gap-2 text-foreground">
         <fieldset className="flex flex-col">
-          <label className="text-md" htmlFor="email">
-            Email
-          </label>
+          <Label htmlFor="email">Email</Label>
           <input
             className="rounded-md px-4 py-2 bg-inherit border"
             name="email"
@@ -47,9 +46,7 @@ export default async function Login({
           />
         </fieldset>
         <fieldset className="flex flex-col">
-          <label className="text-md" htmlFor="password">
-            Password
-          </label>
+          <Label htmlFor="password">Password</Label>
           <input
             className="rounded-md px-4 py-2 bg-inherit border"
             type="password"
