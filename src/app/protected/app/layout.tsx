@@ -3,5 +3,5 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <div className="w-full flex">{children}</div>;
+  return <div className="w-full flex max-h-screen">{children}</div>;
 }
