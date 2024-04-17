@@ -6,12 +6,12 @@ import { protectPageFromUnauthenticated } from "@/lib/guards/server/authenticate
 export default async function appPage() {
   await protectPageFromUnauthenticated();
   return (
-    <div className="flex w-full min-h-screen">
-      <div className="w-full h-screen max-w-72 border-r border-neutral-300">
+    <div className="flex w-full">
+      <div className="w-full h-screen max-w-72 border-r border-neutral-200">
         <CalendarAside />
       </div>
-      <section className="h-full w-full">
-        <header className="w-full border-b border-neutral-300 p-6 flex justify-end">
+      <section className="h-full w-full overflow-y-auto">
+        <header className="w-full bg-neutral-50 border-b border-neutral-200 p-6 flex justify-end sticky top-0">
           <CalendarFilters />
         </header>
         <CalendarGrid />
