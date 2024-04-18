@@ -1,33 +1,17 @@
+"use client";
+
 import { cn } from "@/lib/utils/cn";
 import { Column } from "../../column";
 import { TimeAside } from "../../time-aside";
+import { useWeekViewStore } from "@/stores/week-view";
+import { getWeekDayName } from "@/lib/dates/get-week-day-name";
 
 export function WeekView() {
-  const daysOfWeek = [" ", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  const weekDates = useWeekViewStore((state) => state.weekDates);
 
-  const thisWeek: { date: number; day: string }[] = [];
-
-  const today = new Date();
-
-  const startOfWeek = new Date().getDate() - new Date().getDay() + 1;
-
-  for (let i = 0; i < 7; i++) {
-    const current = new Date(startOfWeek);
-    current.setDate(startOfWeek + i);
-
-    let dayOfWeek: number;
-
-    if (current.getDay() === 0) {
-      dayOfWeek = 7;
-    } else {
-      dayOfWeek = current.getDay();
-    }
-
-    thisWeek.push({
-      date: current.getDate(),
-      day: daysOfWeek[dayOfWeek],
-    });
-  }
+  const weekDaysNames: (typeof namesOfDaysOfWeek)[number][] = weekDates.map(
+    (day) => getWeekDayName({ date: day }),
+  );
 
   return (
     <div className="flex flex-col w-full">
@@ -36,18 +20,18 @@ export function WeekView() {
           GTM-3
         </span>
         <ul className={`w-full flex-1 grid grid-cols-7`}>
-          {thisWeek.map(({ day, date }, i) => (
+          {weekDaysNames.map((dayName, i) => (
             <li key={i} className="flex flex-col h-full">
               <header
                 className={cn(
                   "py-2 text-center border-r border-neutral-200",
                   `${
-                    date === new Date().getDate() &&
+                    weekDates[i].getDate() === new Date().getDate() &&
                     "bg-primary text-primary-foreground"
                   }`,
                 )}
               >
-                {day} {date}
+                {dayName} {weekDates[i].getDate()}
               </header>
             </li>
           ))}
@@ -58,9 +42,9 @@ export function WeekView() {
           <TimeAside />
         </div>
         <ul className={`w-full flex-1 grid grid-cols-7 overflow-auto`}>
-          {thisWeek.map(({ day, date }, i) => (
+          {weekDates.map((date, i) => (
             <li key={i} className="w-full">
-              <Column />
+              <Column date={date} />
             </li>
           ))}
         </ul>
