@@ -16,6 +16,8 @@ import {
 import { useEventStore } from "@/stores/events";
 import { TTimeSpan } from "@/lib/types/time-span";
 import { getWeekDayName } from "@/lib/dates/get-week-day-name";
+import { createClient } from "@/lib/utils/supabase/client";
+import { Database } from "@/lib/utils/supabase/types";
 
 type TFormAreas = {
   title: string;
@@ -40,18 +42,35 @@ export function CreateEventForm({
 
   async function createEvent(data: TFormAreas) {
     const { title } = data;
+    if (!title) return;
 
-    const startDate = new Date(date);
+    const start_date = new Date(date);
     const [startHour, startMinutes] = selectedTimeSpan.start.split(":");
-    startDate.setHours(Number(startHour), Number(startMinutes));
+    start_date.setHours(Number(startHour), Number(startMinutes));
 
-    const endDate = new Date(date);
+    const end_date = new Date(date);
     const [endHour, endMinutes] = selectedTimeSpan.end.split(":");
-    startDate.setHours(Number(endHour), Number(endMinutes));
+    start_date.setHours(Number(endHour), Number(endMinutes));
 
-    const newEvent = { title, startDate, endDate };
+    if (!end_date || !start_date) return;
 
-    console.log({ newEvent });
+    const supabase = createClient();
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) return;
+
+    // @ts-ignore
+    const { error } = await supabase
+      .from("event")
+      .insert<Database["public"]["Tables"]["event"]["Insert"]>({
+        title,
+        start_date,
+        end_date,
+        profile_id: user.id,
+      });
   }
 
   const timeSpans = useEventStore((state) => state.timeSpans);

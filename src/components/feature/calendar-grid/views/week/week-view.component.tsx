@@ -9,9 +9,7 @@ import { getWeekDayName } from "@/lib/dates/get-week-day-name";
 export function WeekView() {
   const weekDates = useWeekViewStore((state) => state.weekDates);
 
-  const weekDaysNames: (typeof namesOfDaysOfWeek)[number][] = weekDates.map(
-    (day) => getWeekDayName({ date: day }),
-  );
+  const weekDaysNames = weekDates.map((day) => getWeekDayName({ date: day }));
 
   return (
     <div className="flex flex-col w-full">
