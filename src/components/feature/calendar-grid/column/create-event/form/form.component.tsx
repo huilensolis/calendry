@@ -62,15 +62,12 @@ export function CreateEventForm({
 
     if (!user) return;
 
-    // @ts-ignore
-    const { error } = await supabase
-      .from("event")
-      .insert<Database["public"]["Tables"]["event"]["Insert"]>({
-        title,
-        start_date,
-        end_date,
-        profile_id: user.id,
-      });
+    const { error } = await supabase.from("event").insert({
+      title,
+      start_date: start_date.toDateString(),
+      end_date: start_date.toDateString(),
+      profile_id: user.id,
+    });
   }
 
   const timeSpans = useEventStore((state) => state.timeSpans);
