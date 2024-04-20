@@ -53,6 +53,8 @@ export function CreateEventForm({
     const supabase = createClient();
 
     try {
+      setIsLoading(true);
+
       const {
         data: { user },
       } = await supabase.auth.getUser();
@@ -67,6 +69,8 @@ export function CreateEventForm({
       });
     } catch (error) {
       console.log({ error });
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -139,7 +143,11 @@ export function CreateEventForm({
           {getWeekDayName({ date: date })} {date.getDate()}
         </span>
       </section>
-      <Button type="submit" disabled={isLoading || !isValid}>
+      <Button
+        type="submit"
+        disabled={isLoading || !isValid}
+        loading={isLoading}
+      >
         Create
       </Button>
     </form>
