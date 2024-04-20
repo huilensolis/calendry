@@ -17,7 +17,6 @@ import { useEventStore } from "@/stores/events";
 import { TTimeSpan } from "@/lib/types/time-span";
 import { getWeekDayName } from "@/lib/dates/get-week-day-name";
 import { createClient } from "@/lib/utils/supabase/client";
-import { Database } from "@/lib/utils/supabase/types";
 
 type TFormAreas = {
   title: string;
@@ -42,32 +41,33 @@ export function CreateEventForm({
 
   async function createEvent(data: TFormAreas) {
     const { title } = data;
-    if (!title) return;
 
     const start_date = new Date(date);
     const [startHour, startMinutes] = selectedTimeSpan.start.split(":");
-    start_date.setHours(Number(startHour), Number(startMinutes));
+    start_date.setHours(Number(startHour), Number(startMinutes), 0);
 
     const end_date = new Date(date);
     const [endHour, endMinutes] = selectedTimeSpan.end.split(":");
-    start_date.setHours(Number(endHour), Number(endMinutes));
-
-    if (!end_date || !start_date) return;
+    end_date.setHours(Number(endHour), Number(endMinutes), 0);
 
     const supabase = createClient();
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
 
-    if (!user) return;
+      if (!user) throw new Error("no user found");
 
-    const { error } = await supabase.from("event").insert({
-      title,
-      start_date: start_date.toDateString(),
-      end_date: start_date.toDateString(),
-      profile_id: user.id,
-    });
+      const { error } = await supabase.from("event").insert({
+        title,
+        start_date: start_date.toISOString(),
+        end_date: end_date.toISOString(),
+        profile_id: user.id,
+      });
+    } catch (error) {
+      console.log({ error });
+    }
   }
 
   const timeSpans = useEventStore((state) => state.timeSpans);
