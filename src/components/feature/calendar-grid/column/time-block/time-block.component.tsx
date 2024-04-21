@@ -15,11 +15,8 @@ export function TimeBlock({
 }) {
   return (
     <ContextMenu>
-      <ContextMenuTrigger
-        onClick={() => console.log({ timeSpan })}
-        className="w-full h-full"
-      >
-        <div className="w-full h-full">{JSON.stringify(timeSpan)}</div>
+      <ContextMenuTrigger className="w-full h-full">
+        <div className="w-full h-full"></div>
       </ContextMenuTrigger>
       <ContextMenuContent className="w-64">
         <CreateEventSheet timeSpan={timeSpan} date={date} />

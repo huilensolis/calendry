@@ -4,7 +4,6 @@ import { createClient } from "@/lib/utils/supabase/server";
 import { redirect } from "next/navigation";
 
 export async function signIn(formData: FormData) {
-  console.log("running sign in");
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
   const supabase = createClient();
