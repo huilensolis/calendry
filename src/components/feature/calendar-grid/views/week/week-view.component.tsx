@@ -27,7 +27,10 @@ export function WeekView() {
 
       const today = new Date();
       const startOfWeek = new Date(today);
-      startOfWeek.setDate(today.getDate() - today.getDay() + 1);
+      function getDay(date: Date) {
+        return date.getDay() === 0 ? 7 : date.getDay();
+      }
+      startOfWeek.setDate(today.getDate() - getDay(today) + 1);
 
       const startOfNextWeek = new Date(today);
       startOfNextWeek.setDate(today.getDate() - today.getDay() + 1 + 7);

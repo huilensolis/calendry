@@ -16,7 +16,7 @@ export function Column({
 
   function removeSpansWithEvents(
     events: Database["public"]["Tables"]["event"]["Row"][],
-  ): string[] {
+  ): (typeof timeSpans)[number][] {
     const occupiedSpans: string[] = [];
 
     events.forEach((event) => {
@@ -83,15 +83,48 @@ export function Column({
           }
         });
 
-        if (!eventInBlock)
+        if (!eventInBlock) {
+          const timeSpanEnd = timeSpansWithoutEventsRows[i + 1];
+
+          const indexOfTimeSpanEndInDefaultSpans = timeSpans.findIndex(
+            (span) => span === timeSpanEnd,
+          );
+
+          // get if the event is after this block or before
+
+          const timeSpanStart = timeSpans[indexOfTimeSpanEndInDefaultSpans - 1];
+
+          const isLastRow = !timeSpanEnd && !timeSpanStart;
+          const lastRowSpanEnd = timeSpansWithoutEventsRows[i];
+          const lastRowSpanIndex = timeSpans.findIndex(
+            (span) => span === lastRowSpanEnd,
+          );
+          const lastRowSpanStart = timeSpans[lastRowSpanIndex];
+
           return (
             <li key={i} className="w-full h-full border-b border-neutral-200 ">
               <TimeBlock
-                timeSpan={{ start: timeSpans[i], end: timeSpans[i + 1] }}
+                timeSpan={{
+                  start:
+                    events.length === 0
+                      ? timeSpans[i]
+                      : isLastRow
+                        ? lastRowSpanStart
+                        : timeSpanStart,
+                  end:
+                    events.length === 0
+                      ? timeSpans[i + 1]
+                        ? timeSpans[i + 1]
+                        : timeSpans[i]
+                      : isLastRow
+                        ? lastRowSpanEnd
+                        : timeSpanEnd,
+                }}
                 date={date}
               />
             </li>
           );
+        }
 
         let totalHours = 0;
 
@@ -106,7 +139,6 @@ export function Column({
             key={i}
             className="w-full h-full border-b border-neutral-200"
             style={{ gridRow: `span ${totalRows}` }}
-            total-hours={totalHours}
           >
             <EventBlock
               event={eventInBlock}
