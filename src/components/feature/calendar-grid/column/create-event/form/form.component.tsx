@@ -115,8 +115,6 @@ export function CreateEventForm({
       // get the end hour span that is -1 than the start hour
       const previewSpanToEndTime = startTimeSpanList[indexOfStartTimeSpan - 1];
 
-      console.log({ previewSpanToEndTime });
-
       if (!previewSpanToEndTime) return;
 
       setSelectedTimeSpan((prev) => ({
