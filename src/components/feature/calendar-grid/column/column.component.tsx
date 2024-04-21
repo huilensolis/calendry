@@ -14,7 +14,26 @@ export function Column({
 }) {
   const timeSpans = useEventStore((state) => state.timeSpans);
 
-  const defaultTotalRows = 50;
+  function removeSpansWithEvents(
+    events: Database["public"]["Tables"]["event"]["Row"][],
+  ): string[] {
+    const occupiedSpans: string[] = [];
+
+    events.forEach((event) => {
+      const startHour = new Date(event.start_date).getHours();
+      const endHour = new Date(event.end_date).getHours();
+
+      for (let i = startHour + 1; i < endHour; i++) {
+        occupiedSpans.push(`${i < 10 ? "0" + i : i}:00`);
+      }
+    });
+
+    return timeSpans.filter((span) => !occupiedSpans.includes(span));
+  }
+
+  const timeSpansWithoutEventsRows = removeSpansWithEvents(events);
+
+  const defaultTotalRows = 25;
 
   const getRowsOfEvents = () => {
     // starts at 8
@@ -22,27 +41,16 @@ export function Column({
     // resutl is two rows * 2
 
     let totalHours = 0;
-    let totalHalfHours = 0;
 
     for (const event of events) {
       const startDate = new Date(event.start_date);
       const endDate = new Date(event.end_date);
 
       totalHours += endDate.getHours() - startDate.getHours();
-
-      if (startDate.getMinutes() === 30) {
-        totalHours -= 1;
-        totalHalfHours += 1;
-      }
-
-      if (endDate.getMinutes() === 30) {
-        totalHours -= 1;
-        totalHalfHours += 1;
-      }
     }
 
     return {
-      totalEventRows: (totalHours < 0 ? 0 : totalHours * 2) + totalHalfHours,
+      totalEventRows: totalHours * 2,
     };
   };
 
@@ -54,11 +62,11 @@ export function Column({
     <ul
       className="w-full h-full bg-neutral-100 border-b border-r border-neutral-200"
       style={{
-        gridTemplateRows: `repeat(${totalRows}, 50px)`,
+        gridTemplateRows: `repeat(${totalRows}, 100px)`,
         display: "grid",
       }}
     >
-      {timeSpans.map((time, i) => {
+      {timeSpansWithoutEventsRows.map((time, i) => {
         const [startTime, endTime] = time.split(":");
 
         const blockDate = new Date(date);
@@ -86,30 +94,19 @@ export function Column({
           );
 
         let totalHours = 0;
-        let halfHours = 0;
 
         const startDate = new Date(eventInBlock.start_date);
         const endDate = new Date(eventInBlock.end_date);
 
         totalHours += endDate.getHours() - startDate.getHours(); // we count all hours
 
-        if (startDate.getMinutes() === 30) {
-          totalHours -= 1;
-          halfHours += 1;
-        }
-
-        if (endDate.getMinutes() === 30) {
-          halfHours += 1;
-        }
-
-        const totalRows = totalHours * 2 + halfHours;
+        const totalRows = totalHours;
         return (
           <li
             key={i}
             className="w-full h-full border-b border-neutral-200"
             style={{ gridRow: `span ${totalRows}` }}
             total-hours={totalHours}
-            half-hours={halfHours}
           >
             <EventBlock
               event={eventInBlock}
