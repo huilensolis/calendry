@@ -39,6 +39,14 @@ export function CreateEventForm({
     formState: { errors, isValid },
   } = useForm<TFormAreas>({ mode: "onChange" });
 
+  const timeSpans = useEventStore((state) => state.timeSpans);
+
+  const startTimeSpanList = [...timeSpans];
+  startTimeSpanList.pop(); // we remove the 24:00 time span
+
+  const endTimeSpanList = [...timeSpans];
+  endTimeSpanList.shift(); // we remove the 00:00 time span
+
   async function createEvent(data: TFormAreas) {
     const { title } = data;
 
@@ -67,6 +75,8 @@ export function CreateEventForm({
         end_date: end_date.toISOString(),
         profile_id: user.id,
       });
+
+      if (error) throw new Error(error.message);
     } catch (error) {
       console.log({ error });
     } finally {
@@ -74,13 +84,46 @@ export function CreateEventForm({
     }
   }
 
-  const timeSpans = useEventStore((state) => state.timeSpans);
-
   function handleSelectStartTime(value: TTimeSpan["start"]) {
     setSelectedTimeSpan({ ...selectedTimeSpan, start: value });
+
+    const [startHour] = value.split(":");
+    const [endHour] = selectedTimeSpan.end.split(":");
+
+    if (Number(startHour) > Number(endHour)) {
+      const startTimeTimeSpanIndex = endTimeSpanList.findIndex(
+        (span) => span === value,
+      );
+
+      const nextTimeSpan = endTimeSpanList[startTimeTimeSpanIndex + 1];
+
+      setSelectedTimeSpan((prev) => ({ ...prev, end: nextTimeSpan }));
+    }
   }
   function handleSelectEndTime(value: TTimeSpan["start"]) {
     setSelectedTimeSpan({ ...selectedTimeSpan, end: value });
+
+    const [endHour] = value.split(":");
+    const [startHour] = selectedTimeSpan.end.split(":");
+
+    if (Number(endHour) < Number(startHour)) {
+      // get the start hour span
+      const indexOfStartTimeSpan = startTimeSpanList.findIndex(
+        (span) => span === value,
+      );
+
+      // get the end hour span that is -1 than the start hour
+      const previewSpanToEndTime = startTimeSpanList[indexOfStartTimeSpan - 1];
+
+      console.log({ previewSpanToEndTime });
+
+      if (!previewSpanToEndTime) return;
+
+      setSelectedTimeSpan((prev) => ({
+        ...prev,
+        start: previewSpanToEndTime,
+      }));
+    }
   }
 
   return (
@@ -106,15 +149,16 @@ export function CreateEventForm({
           <Label>Start time</Label>
           <Select onValueChange={handleSelectStartTime}>
             <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder={timeSpan.start} />
+              <SelectValue
+                defaultValue={selectedTimeSpan.start}
+                placeholder={selectedTimeSpan.start}
+              >
+                {selectedTimeSpan.start}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
-              {timeSpans.map((time, i) => (
-                <SelectItem
-                  value={time}
-                  key={i}
-                  onClick={(e) => console.log(e)}
-                >
+              {startTimeSpanList.map((time, i) => (
+                <SelectItem value={time} key={i}>
                   {time}
                 </SelectItem>
               ))}
@@ -126,12 +170,14 @@ export function CreateEventForm({
           <Select onValueChange={handleSelectEndTime}>
             <SelectTrigger className="w-[180px]">
               <SelectValue
-                defaultValue={timeSpan.end}
-                placeholder={timeSpan.end}
-              />
+                defaultValue={selectedTimeSpan.end}
+                placeholder={selectedTimeSpan.end}
+              >
+                {selectedTimeSpan.end}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
-              {timeSpans.map((time, i) => (
+              {endTimeSpanList.map((time, i) => (
                 <SelectItem value={time} key={i}>
                   {time}
                 </SelectItem>
