@@ -32,10 +32,6 @@ export type TTimeSpans = [
 
 type TEventStore = {
   timeSpans: TTimeSpans; // in format 04:30
-  timeBlocks: TTimeBlock[];
-  addNewTimeBlock: (timeBlock: TTimeBlock) => void;
-  removeTimeBlock: (timeBlock: TTimeBlock) => void;
-  updateTimeBlock: (timeBlock: TTimeBlock) => void;
 };
 
 export const useEventStore = create<TEventStore>((set, get) => ({
@@ -66,10 +62,4 @@ export const useEventStore = create<TEventStore>((set, get) => ({
     "23:00",
     "24:00",
   ],
-  timeBlocks: [],
-  addNewTimeBlock(timeBlock) {
-    set({ timeBlocks: [...get().timeBlocks, timeBlock] });
-  },
-  removeTimeBlock(timeBlock) {},
-  updateTimeBlock(timeBlock) {},
 }));

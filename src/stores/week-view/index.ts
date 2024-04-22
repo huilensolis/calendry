@@ -11,6 +11,8 @@ type TWeekViewStore = {
   updateWeekEvent: (
     event: Database["public"]["Tables"]["event"]["Row"],
   ) => void;
+  isFetchingEvents: boolean;
+  toggleIsFetchingEvents: () => void;
 };
 
 const today = new Date();
@@ -60,4 +62,7 @@ export const useWeekViewStore = create<TWeekViewStore>((set, get) => ({
 
     set({ thisWeekEvents: currentWeekEvents });
   },
+  isFetchingEvents: false,
+  toggleIsFetchingEvents: () =>
+    set({ isFetchingEvents: !get().isFetchingEvents }),
 }));
