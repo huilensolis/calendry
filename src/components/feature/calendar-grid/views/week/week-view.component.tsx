@@ -12,41 +12,52 @@ export function WeekView() {
   const weekDates = useWeekViewStore((state) => state.weekDates);
   const pushWeekEvent = useWeekViewStore((state) => state.pushWeekEvent);
   const weekEvents = useWeekViewStore((state) => state.thisWeekEvents);
+  const toggleIsFetching = useWeekViewStore(
+    (state) => state.toggleIsFetchingEvents,
+  );
 
   const weekDaysNames = weekDates.map((day) => getWeekDayName({ date: day }));
 
+  function getDay(date: Date) {
+    return date.getDay() === 0 ? 7 : date.getDay();
+  }
+
   useEffect(() => {
     async function getEvents({ abortSignal }: { abortSignal: AbortSignal }) {
-      const supabase = createClient();
+      try {
+        toggleIsFetching();
+        const supabase = createClient();
 
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
 
-      if (!user) return;
+        if (!user) throw new Error("no user found");
 
-      const today = new Date();
-      const startOfWeek = new Date(today);
-      function getDay(date: Date) {
-        return date.getDay() === 0 ? 7 : date.getDay();
-      }
-      startOfWeek.setDate(today.getDate() - getDay(today) + 1);
+        const today = new Date();
+        const startOfWeek = new Date(today);
+        startOfWeek.setDate(today.getDate() - getDay(today) + 1);
 
-      const startOfNextWeek = new Date(today);
-      startOfNextWeek.setDate(today.getDate() - today.getDay() + 1 + 7);
+        const startOfNextWeek = new Date(today);
+        startOfNextWeek.setDate(today.getDate() - today.getDay() + 1 + 7);
 
-      const { data, error } = await supabase
-        .from("event")
-        .select("*")
-        .eq("profile_id", user.id)
-        .gte("start_date", startOfWeek.toDateString())
-        .lt("start_date", startOfNextWeek.toDateString())
-        .abortSignal(abortSignal);
+        const { data, error } = await supabase
+          .from("event")
+          .select("*")
+          .eq("profile_id", user.id)
+          .gte("start_date", startOfWeek.toDateString())
+          .lt("start_date", startOfNextWeek.toDateString())
+          .abortSignal(abortSignal);
 
-      if (error || !data?.length) return;
+        if (error || !data?.length) throw new Error("");
 
-      for (const event of data) {
-        pushWeekEvent(event);
+        for (const event of data) {
+          pushWeekEvent(event);
+        }
+      } catch (e) {
+        console.log(e);
+      } finally {
+        toggleIsFetching();
       }
     }
 
