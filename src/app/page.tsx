@@ -8,11 +8,10 @@ export default async function IndexPage() {
       </header>
       <main className="h-full flex flex-col items-center justify-center">
         <h1 className="text-6xl font-bold text-balance">
-          Spend 5 minutes, save hours
+          organize your week on Calendry
         </h1>
         <p className="text-balance max-w-xl text-center">
-          Clendry is an open source calendar that saves you time, with minimal
-          time spent organizating and full week organization.
+          Clendry is an open source calendar to organize your week
         </p>
       </main>
     </article>
