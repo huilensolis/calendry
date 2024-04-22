@@ -67,7 +67,9 @@ export const useEventStore = create<TEventStore>((set, get) => ({
     "24:00",
   ],
   timeBlocks: [],
-  addNewTimeBlock(timeBlock) {},
+  addNewTimeBlock(timeBlock) {
+    set({ timeBlocks: [...get().timeBlocks, timeBlock] });
+  },
   removeTimeBlock(timeBlock) {},
   updateTimeBlock(timeBlock) {},
 }));
