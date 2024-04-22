@@ -17,6 +17,7 @@ import { useEventStore } from "@/stores/events";
 import { TTimeSpan } from "@/lib/types/time-span";
 import { getWeekDayName } from "@/lib/dates/get-week-day-name";
 import { createClient } from "@/lib/utils/supabase/client";
+import { useWeekViewStore } from "@/stores/week-view";
 
 type TFormAreas = {
   title: string;
@@ -40,6 +41,7 @@ export function CreateEventForm({
   } = useForm<TFormAreas>({ mode: "onChange" });
 
   const timeSpans = useEventStore((state) => state.timeSpans);
+  const pushWeekEvent = useWeekViewStore((store) => store.pushWeekEvent);
 
   const startTimeSpanList = [...timeSpans];
   startTimeSpanList.pop(); // we remove the 24:00 time span
@@ -69,14 +71,20 @@ export function CreateEventForm({
 
       if (!user) throw new Error("no user found");
 
-      const { error } = await supabase.from("event").insert({
-        title,
-        start_date: start_date.toISOString(),
-        end_date: end_date.toISOString(),
-        profile_id: user.id,
-      });
+      const { error, data } = await supabase
+        .from("event")
+        .insert({
+          title,
+          start_date: start_date.toISOString(),
+          end_date: end_date.toISOString(),
+          profile_id: user.id,
+        })
+        .select("*")
+        .single();
 
-      if (error) throw new Error(error.message);
+      if (error || !data) throw new Error(error.message);
+
+      pushWeekEvent(data);
     } catch (error) {
       console.log({ error });
     } finally {
